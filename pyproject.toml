@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "YavuzMSA"
-version = "0.1.0"
+version = "0.2.0"
 authors = [
   { name="Yavuz Selim Özkan" }
 ]
@@ -18,7 +18,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
 ]
 dependencies = [
-    "numpy>=1.21.0"
+    "numpy>=1.21.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0"
 ]
 
 [project.urls]

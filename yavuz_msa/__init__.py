@@ -3,44 +3,33 @@ from .core.distance import DistanceMatrixCalculator
 from .core.tree import GuideTreeBuilder
 from .alignment.progressive import ProgressiveAligner
 from .alignment.refinement import IterativeRefiner
+from .visualization.plot import DistanceVisualizer
 
-def align_sequences(sequence_dict, k_size=3, max_iterations=5):
-    """
-    Kullanıcının verdiği genetik dizileri MAFFT algoritması ile hizalar.
-    
-    Kullanım:
-    ---------
-    diziler = {
-        "Seq1": "ATGCGT",
-        "Seq2": "ATGCGA",
-        "Seq3": "ATCCGT"
-    }
-    hizalanmis = align_sequences(diziler)
-    """
-    
-    # 1. Veri Hazırlığı
+def align_sequences(sequence_dict, k_size=3, max_iterations=5, show_distance_matrix=False):
     sequences = [Sequence(header, seq) for header, seq in sequence_dict.items()]
     
-    # 2. Aşama 1: K-mer Mesafe Matrisi
     dist_calc = DistanceMatrixCalculator(k_size=k_size)
     matrix = dist_calc.build_matrix(sequences)
     
-    # 3. Aşama 1 Devamı: UPGMA Rehber Ağaç
+    if show_distance_matrix:
+        headers = list(sequence_dict.keys())
+        DistanceVisualizer.plot_heatmap(matrix, headers, k_size=k_size)
+    
     tree_builder = GuideTreeBuilder(matrix)
     root_node = tree_builder.build_tree()
     
-    # 4. Aşama 2: Aşamalı Hizalama (Progressive)
     aligner = ProgressiveAligner()
-    # (Not: align_tree özyinelemeli çalıştığı için kök düğümü veriyoruz)
-    progressive_result = aligner.align_tree(root_node, sequences)
+    # Artık align_tree hem dizileri hem de onların karışmış sıradaki isimlerini döndürüyor
+    progressive_seqs, progressive_names = aligner.align_tree(root_node, sequences, show_dp=show_distance_matrix)
     
-    # Eğer ikiden fazla dizi varsa ve align_tree tuple dönüyorsa, 
-    # listeye çevirme (flatten) işlemi yapılmalıdır. (Simüle ediyoruz)
-    if isinstance(progressive_result, tuple):
-        progressive_result = list(progressive_result)
-    
-    # 5. Aşama 3: İteratif İyileştirme (Refinement)
     refiner = IterativeRefiner(aligner, max_iterations=max_iterations)
-    final_alignment = refiner.refine(progressive_result)
+    final_alignment = refiner.refine(progressive_seqs)
     
-    return final_alignment
+    # KARIŞAN SIRALAMAYI ORİJİNAL GİRDİ SIRASINA (Seq1, Seq2...) GÖRE DÜZELTME
+    result_dict = {}
+    for name, seq in zip(progressive_names, final_alignment):
+        result_dict[name] = seq
+        
+    ordered_results = [result_dict[header] for header in sequence_dict.keys()]
+    
+    return ordered_results

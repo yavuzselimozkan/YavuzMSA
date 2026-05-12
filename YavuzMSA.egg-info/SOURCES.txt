@@ -14,3 +14,5 @@ yavuz_msa/core/distance.py
 yavuz_msa/core/tree.py
 yavuz_msa/models/__init__.py
 yavuz_msa/models/sequence.py
+yavuz_msa/visualization/__init__.py
+yavuz_msa/visualization/plot.py

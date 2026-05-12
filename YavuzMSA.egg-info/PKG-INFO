@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: YavuzMSA
-Version: 0.1.0
+Version: 0.2.0
 Summary: A Multiple Sequence Alignment library implementing the MAFFT algorithm.
 Author: Yavuz Selim Özkan
 Project-URL: Homepage, https://github.com/yavuzselimozkan/YavuzMSA
@@ -11,5 +11,7 @@ Classifier: Topic :: Scientific/Engineering :: Bio-Informatics
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
 Requires-Dist: numpy>=1.21.0
+Requires-Dist: matplotlib>=3.5.0
+Requires-Dist: seaborn>=0.11.0
 
 <!-- Github ve PyPI'da görünecek proje açıklaması -->
