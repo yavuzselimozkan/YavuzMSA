@@ -1,0 +1,1 @@
+<!-- Github ve PyPI'da görünecek proje açıklaması -->
